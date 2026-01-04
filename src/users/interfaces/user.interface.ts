@@ -1,6 +1,10 @@
 export interface User {
     id: number;
-    name: string;
+    username: string;
     email: string;
-    age: number;
+    password: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
+
+export type SafeUser = Omit<User, 'password'>;
