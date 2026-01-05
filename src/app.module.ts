@@ -1,14 +1,29 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ItemsController } from './items/items.controller';
-import { ItemsService } from './items/items.service';
-import { UsersController } from './users/users.controller';
-import { UsersService } from './users/users.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MemberModule } from './member/member.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController, ItemsController, UsersController],
-  providers: [AppService, ItemsService, UsersService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env.dev',
+    }),
+
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'mysql',
+        host: config.get<string>('DB_HOST'),
+        port: Number(config.get('DB_PORT')),
+        username: config.get<string>('DB_USERNAME'),
+        password: config.get<string>('DB_PASSWORD'),
+        database: config.get<string>('DB_DATABASE'),
+        autoLoadEntities: true,
+        synchronize: true,
+      }),
+    }),
+    MemberModule,
+  ],
 })
 export class AppModule {}
