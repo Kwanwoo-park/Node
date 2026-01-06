@@ -16,7 +16,8 @@ btn.addEventListener('click', (event) => {
         }),
     })
     .then(res => {
-        if (!res.ok) throw new Error('Login failed');
+        if (!res.ok)
+            throw new Error('Login failed');
         return res.json();
     })
     .then(data => {
