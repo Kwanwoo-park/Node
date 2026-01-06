@@ -11,7 +11,4 @@ export class UpdateMemberDto {
   @IsString()
   @IsNotEmpty()
   name: string;
-
-  @IsDate()
-  updateAt: Date;
 }
