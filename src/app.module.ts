@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MemberModule } from './member/member.module';
-import { MemberRenderController } from './render/member-render.controller';
+import { RenderMemberController } from './member/render.member.controller';
 
 @Module({
   imports: [
@@ -26,6 +26,6 @@ import { MemberRenderController } from './render/member-render.controller';
     }),
     MemberModule,
   ],
-  controllers: [MemberRenderController],
+  controllers: [RenderMemberController],
 })
 export class AppModule {}
