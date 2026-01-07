@@ -5,10 +5,9 @@ import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { CreateMemberDto } from "./dto/create-member.dto";
 import { UpdateMemberDto } from "./dto/update-member.dto";
-import { RequestMemberDto } from "./dto/request-member.dto";
 
 @Injectable()
-export class memberServie {
+export class MemberService {
     constructor(
         @InjectRepository(Member)
         private memberRepository: Repository<Member>,
@@ -21,6 +20,15 @@ export class memberServie {
 
     async findOne(id: number): Promise<Member> {
         const member = await this.memberRepository.findOne({ where: { id }});
+
+        if (!member)
+            throw new NotFoundException('Member not found');
+
+        return member;
+    }
+
+    async findByEmail(email: string) {
+        const member = await this.memberRepository.findOne({ where: { email }});
 
         if (!member)
             throw new NotFoundException('Member not found');
@@ -56,17 +64,5 @@ export class memberServie {
 
     async delete(id: number): Promise<void> {
         await this.memberRepository.delete(id);
-    }
-
-    async validateMember(requestMemberDto: RequestMemberDto): Promise<Member> {
-        const { email, password } = requestMemberDto;
-        const member = await this.memberRepository.findOneBy({ email });
-
-        if (!member) throw new UnauthorizedException("가입하지 않은 이메일 입니다");
-
-        const isMatch = await bcrypt.compare(password, member.password);
-        if (!isMatch) throw new UnauthorizedException("비밀번호가 틀렸습니다");
-
-        return member;
     }
 }

@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MemberModule } from './member/member.module';
 import { RenderMemberController } from './member/render.member.controller';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RenderMemberController } from './member/render.member.controller';
       }),
     }),
     MemberModule,
+    AuthModule,
   ],
   controllers: [RenderMemberController],
 })
