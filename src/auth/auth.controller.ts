@@ -1,11 +1,15 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RequestMemberDto } from 'src/member/dto/request-member.dto';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('api/auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(
+        private authService: AuthService,
+        private jwtService: JwtService,
+    ) {}
 
     @Post('/login')
     @HttpCode(HttpStatus.OK)
@@ -13,15 +17,37 @@ export class AuthController {
         @Body() requestMemberDto: RequestMemberDto,
         @Res({ passthrough: true }) res: Response,
     ) {
-        const { accessToken } = await this.authService.login(requestMemberDto);
-        
-        res.cookie('access_token', accessToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'lax',
-            maxAge: 1000 * 60 * 60,
-        });
+        return this.authService.login(requestMemberDto, res);
+    }
 
-        return { message: 'login sucess' };
+    @Post('/refresh')
+    async refresh(
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        const refreshToken = req.cookies?.refresh_token;
+
+        if (!refreshToken) throw new UnauthorizedException();
+
+        try {
+            const payload = this.jwtService.verify(refreshToken);
+
+            if (payload.type !== 'refresh') throw new UnauthorizedException();
+
+            const newAccessToken = this.jwtService.sign(
+                { sub: payload.sub, email: payload.email },
+                { expiresIn: '1m' },
+            );
+
+            res.cookie('access_token', newAccessToken, {
+               httpOnly: true,
+               sameSite: 'lax',
+               secure: true, 
+            });
+
+            return { message: 'access token refreshed' };
+        } catch {
+            throw new UnauthorizedException();
+        }
     }
 }

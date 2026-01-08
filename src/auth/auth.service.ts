@@ -4,6 +4,7 @@ import { RequestMemberDto } from 'src/member/dto/request-member.dto';
 import { Member } from 'src/member/member.entity';
 import * as bcrypt from "bcrypt";
 import { MemberService } from 'src/member/member.service';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -23,17 +24,32 @@ export class AuthService {
         return member;
     }
 
-    async login(requestMemberDto: RequestMemberDto) {
+    async login(requestMemberDto: RequestMemberDto, res: Response) {
         const { email, password } = requestMemberDto;
         const member = await this.validateMember(email, password);
 
-        const payload = {
-            sub: member.id,
-            email: member.email,
-        };
+        const accessToken = this.jwtService.sign(
+            { sub: member.id, email: member.email },
+            { expiresIn: '1m' },
+        );
 
-        const accessToken = this.jwtService.sign(payload);
+        const refreshToken = this.jwtService.sign(
+            { sub: member.id, email: member.email , type: 'refresh' },
+            { expiresIn: '7d' },
+        );
 
-        return { accessToken };
+        res.cookie('access_token', accessToken, {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: true,
+        });
+
+        res.cookie('refresh_token', refreshToken, {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: true,
+        });
+
+        return { message: 'login success' };
     }
 }
