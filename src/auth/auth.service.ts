@@ -32,8 +32,8 @@ export class AuthService {
             email: member.email,
         };
 
-        return {
-            accessToken: this.jwtService.sign(payload),
-        };
+        const accessToken = this.jwtService.sign(payload);
+
+        return { accessToken };
     }
 }

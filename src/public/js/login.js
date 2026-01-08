@@ -19,7 +19,6 @@ btn.addEventListener('click', (event) => {
     .then(res => res.json())
     .then(json => {
         console.log(json);
-        localStorage.setItem('token', json.accessToken);
         alert('Login Success');
     })
     .catch(err => {
@@ -30,17 +29,9 @@ btn.addEventListener('click', (event) => {
 auth.addEventListener('click', (event) => {
     event.preventDefault();
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-        alert('로그인이 필요합니다');
-        return;
-    }
-
     fetch(`/api/member/token`, {
         method: 'GET',
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+        credentials: 'include',
     })
     .then(res => res.json())
     .then(json => {
