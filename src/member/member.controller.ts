@@ -3,7 +3,6 @@ import { MemberService } from "./member.service";
 import { CreateMemberDto } from "./dto/create-member.dto";
 import { UpdateMemberDto } from "./dto/update-member.dto";
 import { JwtAuthGuard } from "src/auth/jwt/jwt-auth.guard";
-import type { Response } from "express";
 
 @Controller('api/member')
 export class MemberController {
@@ -23,13 +22,6 @@ export class MemberController {
     @Get('/token')
     getMe(@Request() req) {
         return req.user;
-    }
-
-    @Delete('/logout')
-    logout(@Res({ passthrough: true }) res: Response) {
-        res.clearCookie('access_token');
-        res.clearCookie('refresh_token');
-        return { message: 'logout' };
     }
 
     @Post()

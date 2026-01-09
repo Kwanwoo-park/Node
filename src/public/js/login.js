@@ -59,7 +59,7 @@ auth.addEventListener('click', (event) => {
 logout.addEventListener('click', (event) => {
     event.preventDefault();
 
-    fetch(`/api/member/logout`, {
+    fetch(`/api/auth/logout`, {
         method: 'DELETE',
         credentials: 'include',
     })
