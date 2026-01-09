@@ -4,6 +4,12 @@ const logout = document.getElementById('logout');
 const email = document.getElementById('email');
 const password = document.getElementById('password')
 
+document.addEventListener('DOMContentLoaded', async () => {
+    const res = await authFetch();
+    const data = await res.json();
+    console.log(data);
+})
+
 btn.addEventListener('click', (event) => {
     event.preventDefault();
 
@@ -27,33 +33,32 @@ btn.addEventListener('click', (event) => {
     });
 });
 
-auth.addEventListener('click', (event) => {
+auth.addEventListener('click', async (event) => {
     event.preventDefault();
 
-    fetch(`/api/member/token`, {
+    let res = await fetch(`/api/member/token`, {
         method: 'GET',
         credentials: 'include',
-    })
-    .then(res => res.json())
-    .then(json => {
-        console.log(json);
-        if (json.statusCode === 401) {
-            fetch(`/api/auth/refresh`, {
-                method: 'POST',
+    });
+
+    let json = await res.json();
+    console.log(json);
+
+    if (res.status === 401) {
+        const refreshRes = await fetch(`/api/auth/refresh`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+
+        if (refreshRes.ok) {
+            res = await fetch(`/api/member/token`, {
+                method: 'GET',
                 credentials: 'include',
-            })
-            .then(res => res.json())
-            .then(json => {
-                console.log(json);
-            })
-            .catch(err => {
-                console.error(err);
             });
         }
-    })
-    .catch(err => {
-        console.error(err);
-    });
+
+        console.log(json);
+    }
 })
 
 logout.addEventListener('click', (event) => {
@@ -76,3 +81,26 @@ password.addEventListener('keydown', (event) => {
     if (event.key == 'Enter')
         btn.click();
 });
+
+async function authFetch() {
+    let res = await fetch(`/api/member/token`, {
+        method: 'GET',
+        credentials: 'include',
+    });
+
+    if (res.status === 401) {
+        const refresh = await fetch(`/api/auth/refresh`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+
+        if (refresh.ok) {
+            res = await fetch(`/api/member/token`, {
+                method: 'GET',
+                credentials: 'include',
+            });
+        }
+    }
+
+    return res;
+}
