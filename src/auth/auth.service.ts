@@ -48,6 +48,7 @@ export class AuthService {
         await this.refreshTokenRepo.save({
             userId: member.id,
             tokenHash,
+            member,
             expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         });
 
@@ -74,6 +75,7 @@ export class AuthService {
 
         const tokens = await this.refreshTokenRepo.find({
             where: { userId: payload.sub },
+            relations: ['member'],
         });
 
         const matched = await Promise.any(

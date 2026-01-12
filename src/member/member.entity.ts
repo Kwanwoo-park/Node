@@ -1,5 +1,6 @@
 import { Exclude } from "class-transformer";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { RefreshToken } from "src/auth/jwt/refresh.token.entity";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Member {
@@ -21,4 +22,10 @@ export class Member {
 
     @UpdateDateColumn()
     updateAt: Date;
+
+    @OneToMany(
+        () => RefreshToken,
+        (refreshToken) => refreshToken.member,
+    )
+    refreshTokens: RefreshToken[];
 }
