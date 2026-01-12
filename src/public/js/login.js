@@ -7,7 +7,11 @@ const password = document.getElementById('password')
 document.addEventListener('DOMContentLoaded', async () => {
     const res = await authFetch();
     const data = await res.json();
+
     console.log(data);
+    
+    if (data.userId)
+        location.replace('/home');
 })
 
 btn.addEventListener('click', (event) => {
@@ -25,57 +29,17 @@ btn.addEventListener('click', (event) => {
     })
     .then(res => res.json())
     .then(json => {
-        console.log(json);
-        alert('Login Success');
+        if (json.statusCode == 401)
+            alert('Login Fail')
+        else {
+            alert('Login Success');
+            location.replace('/home');
+        }
     })
     .catch(err => {
         console.error(err);
     });
 });
-
-auth.addEventListener('click', async (event) => {
-    event.preventDefault();
-
-    let res = await fetch(`/api/member/token`, {
-        method: 'GET',
-        credentials: 'include',
-    });
-
-    let json = await res.json();
-    console.log(json);
-
-    if (res.status === 401) {
-        const refreshRes = await fetch(`/api/auth/refresh`, {
-            method: 'POST',
-            credentials: 'include',
-        });
-
-        if (refreshRes.ok) {
-            res = await fetch(`/api/member/token`, {
-                method: 'GET',
-                credentials: 'include',
-            });
-        }
-
-        console.log(json);
-    }
-})
-
-logout.addEventListener('click', (event) => {
-    event.preventDefault();
-
-    fetch(`/api/auth/logout`, {
-        method: 'DELETE',
-        credentials: 'include',
-    })
-    .then(res => res.json())
-    .then(json => {
-        console.log(json);
-    })
-    .catch(err => {
-        console.error(err);
-    });
-})
 
 password.addEventListener('keydown', (event) => {
     if (event.key == 'Enter')

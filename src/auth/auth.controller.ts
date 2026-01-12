@@ -55,22 +55,7 @@ export class AuthController {
         if (!refreshToken) throw new UnauthorizedException();
 
         try {
-            const payload = this.jwtService.verify(refreshToken);
-
-            if (payload.type !== 'refresh') throw new UnauthorizedException();
-
-            const tokens = await this.refreshTokenReop.find({
-                where: { userId: payload.sub },
-            });
-
-            const matched = await Promise.any(
-                tokens.map(t => bcrypt.compare(refreshToken, t.tokenHash))
-            ).catch(() => null);
-
-            const newAccessToken = this.jwtService.sign(
-                { sub: payload.sub, email: payload.email },
-                { expiresIn: '15m' },
-            );
+            const newAccessToken = this.authService.refreshAccessToken(refreshToken);
 
             res.cookie('access_token', newAccessToken, {
                httpOnly: true,

@@ -67,4 +67,24 @@ export class AuthService {
 
         return { message: 'login success' };
     }
+
+    async refreshAccessToken(refreshToken: string) {
+        const payload = this.jwtService.verify(refreshToken);
+        if (payload.type !== 'refresh') throw new UnauthorizedException();
+
+        const tokens = await this.refreshTokenRepo.find({
+            where: { userId: payload.sub },
+        });
+
+        const matched = await Promise.any(
+            tokens.map(t => bcrypt.compare(refreshToken, t.tokenHash))
+        ).catch(() => null);
+
+        const newAccessToken = this.jwtService.sign(
+            { sub: payload.sub, email: payload.email },
+            { expiresIn: '15m' },
+        );
+
+        return newAccessToken;
+    }
 }

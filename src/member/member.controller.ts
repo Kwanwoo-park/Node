@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPip
 import { MemberService } from "./member.service";
 import { CreateMemberDto } from "./dto/create-member.dto";
 import { UpdateMemberDto } from "./dto/update-member.dto";
-import { JwtAuthGuard } from "src/auth/jwt/jwt-auth.guard";
+import { JwtApiGuard } from "src/auth/jwt/jwt-api.guard";
 
 @Controller('api/member')
 export class MemberController {
@@ -18,8 +18,9 @@ export class MemberController {
         return this.memberServie.findOne(id);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtApiGuard)
     @Get('/token')
+    @HttpCode(HttpStatus.OK)
     getMe(@Request() req) {
         return req.user;
     }
