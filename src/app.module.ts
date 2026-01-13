@@ -28,6 +28,5 @@ import { AuthModule } from './auth/auth.module';
     MemberModule,
     AuthModule,
   ],
-  controllers: [RenderMemberController],
 })
 export class AppModule {}

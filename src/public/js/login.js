@@ -1,6 +1,4 @@
 const btn = document.getElementById('btn');
-const auth = document.getElementById('auth');
-const logout = document.getElementById('logout');
 const email = document.getElementById('email');
 const password = document.getElementById('password')
 

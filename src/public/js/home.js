@@ -1,3 +1,6 @@
+const logout = document.getElementById('logout');
+const all = document.getElementById('all');
+
 document.addEventListener('DOMContentLoaded', async () => {
     const res = await authFetch();
 
@@ -15,13 +18,29 @@ logout.addEventListener('click', (event) => {
         method: 'DELETE',
         credentials: 'include',
     })
-    .then(res => res.json())
-    .then(json => {
-        location.replace('/login')
+    .then(res => {
+        if (res.status === 200)
+            location.replace('/login');
     })
     .catch(err => {
         console.error(err);
     });
+})
+
+all.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    fetch(`/api/auth/all/logout`, {
+        method: 'DELETE',
+        credentials: 'include',
+    })
+    .then(res => {
+        if (res.status === 200)
+            location.replace('/login');
+    })
+    .catch(err => {
+        console.error(err);
+    })
 })
 
 async function authFetch() {

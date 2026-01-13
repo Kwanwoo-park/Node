@@ -4,7 +4,7 @@ import { RequestMemberDto } from 'src/member/dto/request-member.dto';
 import { Member } from 'src/member/member.entity';
 import * as bcrypt from "bcrypt";
 import { MemberService } from 'src/member/member.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RefreshToken } from './jwt/refresh.token.entity';
 import { Repository } from 'typeorm';
@@ -29,9 +29,12 @@ export class AuthService {
         return member;
     }
 
-    async login(requestMemberDto: RequestMemberDto, res: Response) {
+    async login(requestMemberDto: RequestMemberDto, res: Response, req: Request) {
         const { email, password } = requestMemberDto;
         const member = await this.validateMember(email, password);
+
+        const userAgent = req.get('user-agent');
+        const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.ip;
 
         const accessToken = this.jwtService.sign(
             { sub: member.id, email: member.email },
@@ -49,6 +52,8 @@ export class AuthService {
             userId: member.id,
             tokenHash,
             member,
+            userAgent: userAgent,
+            ipAddress: ip,
             expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         });
 
@@ -74,7 +79,7 @@ export class AuthService {
         if (payload.type !== 'refresh') throw new UnauthorizedException();
 
         const tokens = await this.refreshTokenRepo.find({
-            where: { userId: payload.sub },
+            where: { member: payload.sub },
             relations: ['member'],
         });
 

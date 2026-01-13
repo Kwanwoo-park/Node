@@ -23,8 +23,9 @@ export class AuthController {
     async login(
         @Body() requestMemberDto: RequestMemberDto,
         @Res({ passthrough: true }) res: Response,
+        @Req() req: Request,
     ) {
-        return this.authService.login(requestMemberDto, res);
+        return this.authService.login(requestMemberDto, res, req);
     }
 
     @UseGuards(JwtApiGuard)

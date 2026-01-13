@@ -1,5 +1,5 @@
 import { Member } from "src/member/member.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class RefreshToken {
@@ -7,12 +7,16 @@ export class RefreshToken {
     id: number;
 
     @Column()
-    userId: number;
-
-    @Column()
+    @Index()
     tokenHash: string;
 
-    @Column()
+    @Column({ length: 200 })
+    userAgent: string;
+
+    @Column({ length: 45 })
+    ipAddress: string;
+
+    @Column({ type: 'timestamp' })
     expiresAt: Date;
 
     @CreateDateColumn()

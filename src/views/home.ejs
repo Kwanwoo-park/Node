@@ -7,7 +7,19 @@
     <h1>Welcome <%= member.name %></h1>
     <span>Email: <%= member.email %></span>
 
-    <button id="logout" type="button">Logout</button>
+
+    <p>현재 로그인된 기기들 보기</p>
+    <div>
+      <% list.forEach(item => { %>
+        <p>기기 OS = <%= item.userAgent %></p>
+        <p>접속 IP = <%= item.ipAddress %></p>
+      <% }) %>
+    </div>
+
+    <div>
+      <button id="logout" type="button">Logout</button>
+      <button id="all" type="button">All Logout</button>
+    </div>
 </body>
 <script src="/js/home.js"></script>
 </html>
