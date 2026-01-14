@@ -37,7 +37,7 @@ export class AuthService {
         const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.ip;
 
         const accessToken = this.jwtService.sign(
-            { sub: member.id, email: member.email },
+            { sub: member.id, email: member.email, pwdAt: member.passwordChangedAt?.getTime(), },
             { expiresIn: '15m' },
         );
 

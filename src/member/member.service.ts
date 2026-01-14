@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { CreateMemberDto } from "./dto/create-member.dto";
 import { UpdateMemberDto } from "./dto/update-member.dto";
+import { dot } from "node:test/reporters";
 
 @Injectable()
 export class MemberService {
@@ -50,14 +51,17 @@ export class MemberService {
     }
 
     async update(id: number, updateMemberDto: UpdateMemberDto): Promise<void> {
-        const { password, ...result } = updateMemberDto;
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        if (updateMemberDto.password) {
+            const { password, ...result } = updateMemberDto;
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        updateMemberDto = {
-            ...result,
-            password: hashedPassword,
-        };
+            updateMemberDto = {
+                ...result,
+                password: hashedPassword,
+                passwordChangedAt: new Date(),
+            };
+        }
 
         await this.memberRepository.update(id, updateMemberDto);
     }

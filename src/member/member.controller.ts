@@ -3,10 +3,18 @@ import { MemberService } from "./member.service";
 import { CreateMemberDto } from "./dto/create-member.dto";
 import { UpdateMemberDto } from "./dto/update-member.dto";
 import { JwtApiGuard } from "src/auth/jwt/jwt-api.guard";
+import { InjectRepository } from "@nestjs/typeorm";
+import { RefreshToken } from "src/auth/jwt/refresh.token.entity";
+import { Repository } from "typeorm";
+import type { Response } from "express";
 
 @Controller('api/member')
 export class MemberController {
-    constructor(private readonly memberServie: MemberService) {}
+    constructor(
+        private readonly memberServie: MemberService,
+        @InjectRepository(RefreshToken)
+        private readonly refreshTokenReop: Repository<RefreshToken>,
+    ) {}
 
     @Get()
     async findAll() {
@@ -31,10 +39,21 @@ export class MemberController {
         return this.memberServie.create(createMemberDto);
     }
 
-    @Patch('/id')
+    @UseGuards(JwtApiGuard)
+    @Patch(':id')
     @HttpCode(HttpStatus.OK)
-    async update(@Param('id', ParseIntPipe) id: number, @Body() updateMemberDto: UpdateMemberDto, ) {
+    async update(
+        @Param('id', ParseIntPipe) id: number, 
+        @Body() updateMemberDto: UpdateMemberDto,
+        @Res({ passthrough: true }) res: Response,
+    ) {
         this.memberServie.update(id, updateMemberDto);
+        this.refreshTokenReop.delete({
+            member: { id },
+        });
+        
+        res.clearCookie('access_token');
+        res.clearCookie('refresh_token');
     }
 
     @Delete('/id')

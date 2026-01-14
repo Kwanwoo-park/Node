@@ -23,6 +23,9 @@ export class Member {
     @UpdateDateColumn()
     updateAt: Date;
 
+    @Column({ type: 'datetime', nullable: true })
+    passwordChangedAt: Date;
+
     @OneToMany(
         () => RefreshToken,
         (refreshToken) => refreshToken.member,

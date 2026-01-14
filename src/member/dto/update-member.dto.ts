@@ -1,14 +1,11 @@
-import { IsDate, IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateMemberDto } from './create-member.dto';
+import { IsDate, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
 
-export class UpdateMemberDto {
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @MinLength(8)
-  password: string;
-
-  @IsString()
-  @IsNotEmpty()
-  name: string;
+export class UpdateMemberDto extends PartialType(CreateMemberDto) {
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  passwordChangedAt: Date;
 }
