@@ -1,6 +1,6 @@
 const btn = document.getElementById('btn');
 const email = document.getElementById('email');
-const password = document.getElementById('password')
+const password = document.getElementById('password');
 
 document.addEventListener('DOMContentLoaded', async () => {
     const res = await authFetch();
@@ -38,6 +38,10 @@ btn.addEventListener('click', (event) => {
         console.error(err);
     });
 });
+
+document.getElementById('create').addEventListener('click', () => {
+    location.href = '/create';
+})
 
 password.addEventListener('keydown', (event) => {
     if (event.key == 'Enter')

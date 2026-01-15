@@ -19,6 +19,12 @@ export class RenderMemberController {
         return;
     }
 
+    @Get('/create')
+    @Render('create')
+    create() {
+        return;
+    }
+
     @UseGuards(JwtPageGuard)
     @Get('/home')
     @Render('home')

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Req, Request, Res, UseGuards } from "@nestjs/common";
+import { Body, ConflictException, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Req, Request, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { MemberService } from "./member.service";
 import { CreateMemberDto } from "./dto/create-member.dto";
 import { UpdateMemberDto } from "./dto/update-member.dto";
@@ -33,10 +33,16 @@ export class MemberController {
         return req.user;
     }
 
-    @Post()
+    @Post('/create')
     @HttpCode(HttpStatus.CREATED)
     async create(@Body() createMemberDto: CreateMemberDto,) {
-        return this.memberServie.create(createMemberDto);
+        const { email } = createMemberDto;
+        const member = await this.memberServie.findByEmail(email);
+
+        if (!member)
+            return this.memberServie.create(createMemberDto);
+        else
+            throw new ConflictException('이미 존재하는 이메일입니다');
     }
 
     @UseGuards(JwtApiGuard)

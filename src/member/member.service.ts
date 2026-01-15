@@ -31,9 +31,6 @@ export class MemberService {
     async findByEmail(email: string) {
         const member = await this.memberRepository.findOne({ where: { email }});
 
-        if (!member)
-            throw new NotFoundException('Member not found');
-
         return member;
     }
 
