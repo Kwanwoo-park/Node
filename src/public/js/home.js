@@ -1,14 +1,13 @@
 const logout = document.getElementById('logout');
 const all = document.getElementById('all');
+const password = document.getElementById('password');
+const update = document.getElementById('passwordUpdate');
 
 document.addEventListener('DOMContentLoaded', async () => {
     const res = await authFetch();
 
     if (res.status === 401)
         location.replace('/login');
-
-    const data = await res.json();
-    console.log(data)
 })
 
 logout.addEventListener('click', (event) => {
@@ -42,6 +41,29 @@ all.addEventListener('click', (event) => {
         console.error(err);
     })
 })
+
+update.addEventListener('click', async (e) => {
+    const res = await fetch(`/api/member/update/`+ e.target.dataset.memberId, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            password: password.value,
+        }),
+    });
+
+    if (res.status == 200)
+        location.replace('/login');
+    else
+        alert('update fail');
+})
+
+password.addEventListener('keydown', (event) => {
+    if (event.key == 'Enter')
+        update.click();
+});
 
 async function authFetch() {
     let res = await fetch(`/api/member/token`, {

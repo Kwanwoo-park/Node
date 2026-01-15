@@ -13,7 +13,10 @@
         <p>접속 IP = <%= item.ipAddress %></p>
       <% }) %>
     </div>
-
+    <div>
+      <input id="password" type="password" name="password" placeholder="password" />
+      <button id="passwordUpdate" type="button" data-member-id="<%= member.id %>">비밀번호 변경</button>
+    </div>
     <div>
       <button id="logout" type="button">Logout</button>
       <button id="all" type="button">All Logout</button>

@@ -40,7 +40,7 @@ export class MemberController {
     }
 
     @UseGuards(JwtApiGuard)
-    @Patch(':id')
+    @Patch('/update/:id')
     @HttpCode(HttpStatus.OK)
     async update(
         @Param('id', ParseIntPipe) id: number, 
