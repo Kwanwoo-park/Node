@@ -2,6 +2,7 @@ const logout = document.getElementById('logout');
 const all = document.getElementById('all');
 const password = document.getElementById('password');
 const update = document.getElementById('passwordUpdate');
+const del = document.getElementById('delete');
 
 document.addEventListener('DOMContentLoaded', async () => {
     const res = await authFetch();
@@ -54,10 +55,24 @@ update.addEventListener('click', async (e) => {
         }),
     });
 
-    if (res.status == 200)
+    if (res.status === 200)
         location.replace('/login');
     else
         alert('update fail');
+})
+
+del.addEventListener('click', async (e) => {
+    const res = await fetch(`/api/member/delete/` + e.target.dataset.memberId, {
+        method: 'DELETE',
+        credentials: 'include',
+    })
+
+    if (res.status === 200)
+        location.replace('/login');
+    else {
+        const data = res.json();
+        alert(data.message);
+    }
 })
 
 password.addEventListener('keydown', (event) => {

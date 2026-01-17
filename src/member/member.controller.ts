@@ -62,8 +62,17 @@ export class MemberController {
         res.clearCookie('refresh_token');
     }
 
-    @Delete('/id')
-    async delete(@Param('id', ParseIntPipe) id: number,) {
+    @Delete('/delete/:id')
+    async delete(
+        @Param('id', ParseIntPipe) id: number,
+        @Res({ passthrough: true }) res: Response,
+    ) {
         this.memberServie.delete(id);
+        this.refreshTokenReop.delete({
+            member: { id },
+        });
+
+        res.clearCookie('access_token');
+        res.clearCookie('refresh_token');
     }
 }
