@@ -15,18 +15,24 @@ export class BoardService {
     async save(createDto: CreateBoardDto, member: Member) {
         const { description, url } = createDto;
 
+        console.log('member.id:', member.id);
+
         const board = this.boardRepository.create({
             description: description,
             url: url,
             member: member,
         });
 
+        console.log('board:', board);
+
         return this.boardRepository.save(board);
     }
 
     async find(member: Member) {
         const boards = await this.boardRepository.find({
-            where: { member: member },
+            where: {
+                member: { id: member.id },
+            },
             relations: ['member'],
         });
 
