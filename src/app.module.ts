@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MemberModule } from './member/member.module';
 import { RenderMemberController } from './member/render.member.controller';
 import { AuthModule } from './auth/auth.module';
+import { BoardModule } from './board/board.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
     MemberModule,
+    BoardModule,
     AuthModule,
   ],
 })

@@ -1,5 +1,6 @@
 import { Exclude } from "class-transformer";
 import { RefreshToken } from "src/auth/jwt/refresh.token.entity";
+import { Board } from "src/board/board.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -31,4 +32,10 @@ export class Member {
         (refreshToken) => refreshToken.member,
     )
     refreshTokens: RefreshToken[];
+
+    @OneToMany(
+        () => Board,
+        (board) => board.member,
+    )
+    board: Board[]; 
 }

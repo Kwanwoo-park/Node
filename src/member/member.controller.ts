@@ -21,7 +21,7 @@ export class MemberController {
         return this.memberServie.findAll();
     }
 
-    @Get('/id')
+    @Get('/get/:id')
     async findOne(@Param('id', ParseIntPipe) id: number,) {
         return this.memberServie.findOne(id);
     }

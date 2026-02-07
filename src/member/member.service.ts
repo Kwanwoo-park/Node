@@ -12,8 +12,7 @@ export class MemberService {
     constructor(
         @InjectRepository(Member)
         private memberRepository: Repository<Member>,
-    ) {
-    }
+    ) {}
 
     async findAll(): Promise<Member[]> {
         return await this.memberRepository.find();
