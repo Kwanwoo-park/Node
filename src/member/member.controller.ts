@@ -30,7 +30,7 @@ export class MemberController {
     @Get('/token')
     @HttpCode(HttpStatus.OK)
     getMe(@Request() req) {
-        return req.user;
+        return this.memberServie.findOne(req.user.userId);
     }
 
     @Post('/create')
