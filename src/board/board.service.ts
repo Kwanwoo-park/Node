@@ -13,17 +13,12 @@ export class BoardService {
     ) {}
 
     async save(createDto: CreateBoardDto, member: Member) {
-        const { description, url } = createDto;
-
-        console.log('member.id:', member.id);
-
         const board = this.boardRepository.create({
-            description: description,
-            url: url,
+            description: createDto.description,
+            url: createDto.url,
+            imgSrc: createDto.imgSrc,
             member: member,
         });
-
-        console.log('board:', board);
 
         return this.boardRepository.save(board);
     }

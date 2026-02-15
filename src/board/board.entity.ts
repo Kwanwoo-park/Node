@@ -10,6 +10,9 @@ export class Board {
     description: string;
 
     @Column()
+    imgSrc: string;
+
+    @Column()
     url: string;
 
     @CreateDateColumn()

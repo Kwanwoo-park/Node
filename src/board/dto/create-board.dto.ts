@@ -7,5 +7,9 @@ export class CreateBoardDto {
 
     @IsString()
     @IsNotEmpty()
+    imgSrc: string;
+
+    @IsString()
+    @IsNotEmpty()
     url: string;
 }
